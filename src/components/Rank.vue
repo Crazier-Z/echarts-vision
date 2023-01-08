@@ -73,7 +73,6 @@ export default {
       this.allData.sort((a, b) => {
         return b.value - a.value
       })
-      console.log('this.allData', this.allData)
       this.updataChart()
       this.startInterval()
     },
