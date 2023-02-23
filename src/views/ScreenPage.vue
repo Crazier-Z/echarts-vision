@@ -98,15 +98,6 @@ export default {
       }
     }
   },
-  created () {
-    // 注册接收到数据的回调函数
-    this.$socket.registerCallBack('fullScreen', this.recvData)
-    this.$socket.registerCallBack('themeChange', this.recvThemeChange)
-  },
-  destroyed () {
-    this.$socket.unRegisterCallBack('fullScreen')
-    this.$socket.unRegisterCallBack('themeChange')
-  },
   computed: {
     titleColor () {
       return {
@@ -127,23 +118,32 @@ export default {
     },
     ...mapState(['theme'])
   },
+  created () {
+    // 注册接收到数据的回调函数
+    this.$socket.registerCallBack('fullScreen', this.recvData)
+    // this.$socket.registerCallBack('themeChange', this.recvThemeChange)
+  },
+  destroyed () {
+    this.$socket.unRegisterCallBack('fullScreen')
+    // this.$socket.unRegisterCallBack('themeChange')
+  },
   methods: {
     changeSize (chartName) {
       // 1.改变fullScreenStatus的数据
-      this.fullScreenStatus[chartName] = !this.fullScreenStatus[chartName]
+      // this.fullScreenStatus[chartName] = !this.fullScreenStatus[chartName]
       // 2.需要调用每一个图表组件的screenAdapter的方法
-      this.$nextTick(() => {
-        this.$refs[chartName].screenAdapter()
-      })
+      // this.$nextTick(() => {
+      //   this.$refs[chartName].screenAdapter()
+      // })
 
       // 将数据发送给服务端
-      // const targetValue = !this.fullScreenStatus[chartName]
-      // this.$socket.send({
-      //   action: 'fullScreen',
-      //   socketType: 'fullScreen',
-      //   chartName: chartName,
-      //   value: targetValue
-      // })
+      const targetValue = !this.fullScreenStatus[chartName]
+      this.$socket.send({
+        action: 'fullScreen',
+        socketType: 'fullScreen',
+        chartName: chartName,
+        value: targetValue
+      })
     },
     // 接收到全屏数据之后的处理
     recvData (data) {

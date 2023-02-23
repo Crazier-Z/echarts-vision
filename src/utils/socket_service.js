@@ -64,7 +64,7 @@ export default class SocketService {
           const realData = JSON.parse(recvData.data)
           this.callBackMapping[socketType].call(this, realData)
         } else if (action === 'fullScreen') {
-          // 全屏事件操作
+          this.callBackMapping[socketType].call(this, recvData)
         } else if (action === 'themeChange') {
           // 主题切换事件操作
         }
