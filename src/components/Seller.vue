@@ -18,9 +18,20 @@ export default {
       timerId: null // 定时器标识
     }
   },
+  created () {
+    // 在组件创建完成之后 进行回调函数的注册
+    this.$socket.registerCallBack('sellerData', this.getData)
+  },
   mounted () {
     this.initChart()
-    this.getData()
+    // this.getData()
+    // 发送数据给服务器，告诉服务器，我现在需要数据
+    this.$socket.send({
+      action: 'getData',
+      socketType: 'sellerData',
+      chartName: 'seller',
+      value: ''
+    })
     window.addEventListener('resize', this.screenAdapter)
     // 在页面加载完成的时候，主动进行屏幕的适配
     this.screenAdapter()
@@ -29,6 +40,8 @@ export default {
     clearInterval(this.timerId)
     // 在组件销毁的时候，需要将监听器取消掉
     window.removeEventListener('resize', this.screenAdapter)
+    // 在组件销毁的时候，进行回调函数的取消
+    this.$socket.unRegisterCallBack('sellerData')
   },
   methods: {
     // 初始化echartInstance对象
@@ -103,9 +116,9 @@ export default {
       })
     },
     // 获取服务器数据
-    async getData () {
+    getData (ret) {
       // http://127.0.0.1:8888/api/seller
-      const { data: ret } = await this.$http.get('seller')
+      // const { data: ret } = await this.$http.get('seller')
       this.allData = ret
       this.allData.sort((a, b) => {
         return a.value - b.value // 升序排列

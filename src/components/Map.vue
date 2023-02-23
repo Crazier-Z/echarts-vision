@@ -17,11 +17,27 @@ export default {
       mapData: {} // 所获取的省份的地图矢量数据
     }
   },
+  created () {
+    // 在组件创建完成之后 进行回调函数的注册
+    this.$socket.registerCallBack('mapData', this.getData)
+  },
   mounted () {
     this.initChart()
-    this.getData()
+    // this.getData()
+    // 发送数据给服务器，告诉服务器，我现在需要数据
+    this.$socket.send({
+      action: 'getData',
+      socketType: 'mapData',
+      chartName: 'map',
+      value: ''
+    })
     window.addEventListener('resize', this.screenAdapter)
     this.screenAdapter()
+  },
+  destroyed () {
+    window.removeEventListener('resize', this.screenAdapter)
+    // 在组件销毁的时候，进行回调函数的取消
+    this.$socket.unRegisterCallBack('mapData')
   },
   methods: {
     async initChart () {
@@ -72,9 +88,9 @@ export default {
         this.chartInstance.setOption(changeOption)
       })
     },
-    async getData () {
+    getData (ret) {
       // 获取服务器的数据，对this.allData进行赋值之后，调用updateChart方法更新图表
-      const { data: ret } = await this.$http.get('map')
+      // const { data: ret } = await this.$http.get('map')
       this.allData = ret
       this.updateChart()
     },
