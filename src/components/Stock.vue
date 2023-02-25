@@ -154,35 +154,35 @@ export default {
             type: 'pie',
             radius: [outerRadius, innerRadius],
             label: {
-              fontSize: titleFontSize / 2
+              fontSize: titleFontSize / 1.6
             }
           },
           {
             type: 'pie',
             radius: [outerRadius, innerRadius],
             label: {
-              fontSize: titleFontSize / 2
+              fontSize: titleFontSize / 1.6
             }
           },
           {
             type: 'pie',
             radius: [outerRadius, innerRadius],
             label: {
-              fontSize: titleFontSize / 2
+              fontSize: titleFontSize / 1.6
             }
           },
           {
             type: 'pie',
             radius: [outerRadius, innerRadius],
             label: {
-              fontSize: titleFontSize / 2
+              fontSize: titleFontSize / 1.6
             }
           },
           {
             type: 'pie',
             radius: [outerRadius, innerRadius],
             label: {
-              fontSize: titleFontSize / 2
+              fontSize: titleFontSize / 1.6
             }
           }
         ]

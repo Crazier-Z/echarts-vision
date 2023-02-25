@@ -155,13 +155,13 @@ export default {
           itemHeight: this.titleFontSize,
           itemGap: this.titleFontSize / 2,
           textStyle: {
-            fontSize: this.titleFontSize / 2
+            fontSize: this.titleFontSize / 1.6
           }
         },
         series: [
           {
             radius: this.titleFontSize * 4.5,
-            center: ['50%', '50%']
+            center: ['50%', '56%']
           }
         ]
       }
@@ -189,7 +189,7 @@ export default {
 <style lang="less" scoped>
 .arr-left, .arr-right  {
   position: absolute;
-  top: 50%;
+  top: 56%;
   transform: translateY(-50%);
   color: #fff;
   cursor: pointer;

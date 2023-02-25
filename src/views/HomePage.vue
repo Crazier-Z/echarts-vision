@@ -10,7 +10,7 @@
       <span class="title">电商平台实时监控系统</span>
       <div class="title-right">
         <img :src="themeSrc" class="qiehuan" @click="handleChangeTheme">
-        <span class="datetime">2049-01-01 00:00:00</span>
+        <span class="datetime">{{ systemDateTime }}</span>
       </div>
     </header>
     <div class="screen-body">
@@ -95,7 +95,11 @@ export default {
         rank: false,
         hot: false,
         stock: false
-      }
+      },
+      // 当前的系统时间
+      systemDateTime: '2049-01-01 00:00:00',
+      // 用于保存当前系统日期的定时器标识
+      timerId: null
     }
   },
   computed: {
@@ -122,10 +126,12 @@ export default {
     // 注册接收到数据的回调函数
     this.$socket.registerCallBack('fullScreen', this.recvData)
     this.$socket.registerCallBack('themeChange', this.recvThemeChange)
+    this.currentTime()
   },
   destroyed () {
     this.$socket.unRegisterCallBack('fullScreen')
     this.$socket.unRegisterCallBack('themeChange')
+    clearInterval(this.timerId)
   },
   methods: {
     changeSize (chartName) {
@@ -168,6 +174,15 @@ export default {
     },
     recvThemeChange () {
       this.$store.commit('changeTheme')
+    },
+    currentTime () {
+      this.systemDateTime = new Date().toLocaleString()
+
+      this.timerId && clearInterval(this.timerId)
+
+      setInterval(() => {
+        this.systemDateTime = new Date().toLocaleString()
+      }, 1000)
     }
   }
 }

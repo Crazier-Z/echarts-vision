@@ -1,17 +1,17 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import ScreenPage from '@/views/ScreenPage'
+import HomePage from '@/views/HomePage'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    redirect: '/screen'
+    redirect: '/home'
   },
   {
-    path: '/screen',
-    component: ScreenPage
+    path: '/home',
+    component: HomePage
   }
 ]
 
