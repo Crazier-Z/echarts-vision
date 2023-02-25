@@ -5,6 +5,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   name: 'RankCom',
   data () {
@@ -14,6 +16,17 @@ export default {
       startValue: 0, // 区域缩放的起点值
       endValue: 9, // 区域缩放的终点值
       timerId: null // 定时器的标识
+    }
+  },
+  computed: {
+    ...mapState(['theme'])
+  },
+  watch: {
+    theme () {
+      this.chartInstance.dispose() // 销毁当前图表
+      this.initChart() // 重新以最新的主题名称初始化图表对象
+      this.screenAdapter() // 完成屏幕的适配
+      this.updateChart() // 更新图表的展示
     }
   },
   created () {
@@ -41,7 +54,7 @@ export default {
   },
   methods: {
     initChart () {
-      this.chartInstance = this.$echarts.init(this.$refs.rank_ref, 'chalk')
+      this.chartInstance = this.$echarts.init(this.$refs.rank_ref, this.theme)
       const initOption = {
         title: {
           text: '▎地区销售排行',
@@ -79,17 +92,17 @@ export default {
       })
     },
     getData (ret) {
-      // 获取服务器的数据， 对this.allData进行赋值之后，调用updataChart方法更新图表
+      // 获取服务器的数据， 对this.allData进行赋值之后，调用updateChart方法更新图表
       // const { data: ret } = await this.$http.get('rank')
       this.allData = ret
       // 对allData里面的每个元素进行排序，从大到小进行
       this.allData.sort((a, b) => {
         return b.value - a.value
       })
-      this.updataChart()
+      this.updateChart()
       this.startInterval()
     },
-    updataChart () {
+    updateChart () {
       const colorArr = [
         ['#0ba82c', '#4ff778'],
         ['#2e72bf', '#23e5e5'],
@@ -170,7 +183,7 @@ export default {
           this.startValue = 0
           this.endValue = 9
         }
-        this.updataChart()
+        this.updateChart()
       }, 2000)
     }
   }

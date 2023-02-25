@@ -12,6 +12,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import { getThemeValue } from '@/utils/theme_utils'
+
 export default {
   name: 'TrendCom',
   data () {
@@ -63,18 +66,30 @@ export default {
     // 设置给标题的样式
     comStyle () {
       return {
-        fontSize: this.titleFontSize + 'px'
+        fontSize: this.titleFontSize + 'px',
+        color: getThemeValue(this.theme).titleColor
       }
     },
     marginStyle () {
       return {
-        marginLeft: this.titleFontSize + 'px'
+        marginLeft: this.titleFontSize + 'px',
+        color: getThemeValue(this.theme).titleColor,
+        backgroundColor: this.theme === 'chalk' ? '#222733' : '#ffffff'
       }
+    },
+    ...mapState(['theme'])
+  },
+  watch: {
+    theme () {
+      this.chartInstance.dispose() // 销毁当前图表
+      this.initChart() // 重新以最新的主题名称初始化图表对象
+      this.screenAdapter() // 完成屏幕的适配
+      this.updateChart() // 更新图表的展示
     }
   },
   methods: {
     initChart () {
-      this.chartInstance = this.$echarts.init(this.$refs.trend_ref, 'chalk')
+      this.chartInstance = this.$echarts.init(this.$refs.trend_ref, this.theme)
       const initOption = {
         grid: {
           left: '3%',
@@ -107,7 +122,6 @@ export default {
       // 对allData进行赋值
       // const { data: ret } = await this.$http.get('trend')
       this.allData = ret
-      console.log('allData', this.allData)
       this.updateChart()
     },
     updateChart () {

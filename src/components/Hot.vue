@@ -8,6 +8,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import { getThemeValue } from '@/utils/theme_utils'
+
 export default {
   name: 'HotCom',
   data () {
@@ -28,8 +31,18 @@ export default {
     },
     comStyle () {
       return {
-        fontSize: this.titleFontSize + 'px'
+        fontSize: this.titleFontSize + 'px',
+        color: getThemeValue(this.theme).titleColor
       }
+    },
+    ...mapState(['theme'])
+  },
+  watch: {
+    theme () {
+      this.chartInstance.dispose() // 销毁当前图表
+      this.initChart() // 重新以最新的主题名称初始化图表对象
+      this.screenAdapter() // 完成屏幕的适配
+      this.updateChart() // 更新图表的展示
     }
   },
   created () {
@@ -57,7 +70,7 @@ export default {
   },
   methods: {
     initChart () {
-      this.chartInstance = this.$echarts.init(this.$refs.hot_ref, 'chalk')
+      this.chartInstance = this.$echarts.init(this.$refs.hot_ref, this.theme)
       const initOption = {
         title: {
           text: '▎热销商品占比',
@@ -103,12 +116,12 @@ export default {
       this.chartInstance.setOption(initOption)
     },
     getData (ret) {
-      // 获取服务器的数据， 对this.allData进行赋值之后，调用updataChart方法更新图表
+      // 获取服务器的数据， 对this.allData进行赋值之后，调用updateChart方法更新图表
       // const { data: ret } = await this.$http.get('hotproduct')
       this.allData = ret
-      this.updataChart()
+      this.updateChart()
     },
-    updataChart () {
+    updateChart () {
       const legendData = this.allData[this.currentIndex].children.map((item) => item.name)
       const seriesData = this.allData[this.currentIndex].children.map((item) => {
         return {
@@ -160,14 +173,14 @@ export default {
       if (this.currentIndex < 0) {
         this.currentIndex = this.allData.length - 1
       }
-      this.updataChart()
+      this.updateChart()
     },
     toRight () {
       this.currentIndex++
       if (this.currentIndex > this.allData.length - 1) {
         this.currentIndex = 0
       }
-      this.updataChart()
+      this.updateChart()
     }
   }
 }

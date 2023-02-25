@@ -5,7 +5,7 @@
         <img :src="headerSrc" alt="">
       </div>
       <span class="logo">
-        <a :style="titleColor" href="https://www.cnblogs.com/crazier/" title="前往Crazier_Z的博客" target="_blank">cnblogs.com/crazier</a>
+        <a :style="logoColor" href="https://www.cnblogs.com/crazier/" title="前往Crazier_Z的博客" target="_blank">cnblogs.com/crazier</a>
       </span>
       <span class="title">电商平台实时监控系统</span>
       <div class="title-right">
@@ -99,7 +99,7 @@ export default {
     }
   },
   computed: {
-    titleColor () {
+    logoColor () {
       return {
         color: getThemeValue(this.theme).titleColor
       }
@@ -121,11 +121,11 @@ export default {
   created () {
     // 注册接收到数据的回调函数
     this.$socket.registerCallBack('fullScreen', this.recvData)
-    // this.$socket.registerCallBack('themeChange', this.recvThemeChange)
+    this.$socket.registerCallBack('themeChange', this.recvThemeChange)
   },
   destroyed () {
     this.$socket.unRegisterCallBack('fullScreen')
-    // this.$socket.unRegisterCallBack('themeChange')
+    this.$socket.unRegisterCallBack('themeChange')
   },
   methods: {
     changeSize (chartName) {
@@ -136,7 +136,7 @@ export default {
       //   this.$refs[chartName].screenAdapter()
       // })
 
-      // 将数据发送给服务端
+      // 将数据发送给服务端,实现全屏的联动切换
       const targetValue = !this.fullScreenStatus[chartName]
       this.$socket.send({
         action: 'fullScreen',

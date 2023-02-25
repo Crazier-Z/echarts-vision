@@ -66,7 +66,7 @@ export default class SocketService {
         } else if (action === 'fullScreen') {
           this.callBackMapping[socketType].call(this, recvData)
         } else if (action === 'themeChange') {
-          // 主题切换事件操作
+          this.callBackMapping[socketType].call(this, recvData)
         }
       }
     }

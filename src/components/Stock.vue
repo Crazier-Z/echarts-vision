@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 
 export default {
   name: 'StockCom',
@@ -14,6 +15,17 @@ export default {
       allData: null,
       currentIndex: 0, // 当前显示的数据
       timerId: null // 定时器的标识
+    }
+  },
+  computed: {
+    ...mapState(['theme'])
+  },
+  watch: {
+    theme () {
+      this.chartInstance.dispose() // 销毁当前图表
+      this.initChart() // 重新以最新的主题名称初始化图表对象
+      this.screenAdapter() // 完成屏幕的适配
+      this.updateChart() // 更新图表的展示
     }
   },
   created () {
@@ -41,7 +53,7 @@ export default {
   },
   methods: {
     initChart () {
-      this.chartInstance = this.$echarts.init(this.$refs.stock_ref, 'chalk')
+      this.chartInstance = this.$echarts.init(this.$refs.stock_ref, this.theme)
       const initOption = {
         title: {
           text: '▎库存和销量分析',
@@ -58,14 +70,14 @@ export default {
       })
     },
     getData (ret) {
-      // 获取服务器的数据， 对this.allData进行赋值之后，调用updataChart方法更新图表
+      // 获取服务器的数据， 对this.allData进行赋值之后，调用updateChart方法更新图表
       // const { data: ret } = await this.$http.get('stock')
       this.allData = ret
       console.log('this.allData', this.allData)
-      this.updataChart()
+      this.updateChart()
       this.startInterval()
     },
-    updataChart () {
+    updateChart () {
       const centerArr = [
         ['18%', '40%'],
         ['50%', '40%'],
@@ -187,7 +199,7 @@ export default {
         if (this.currentIndex > 1) {
           this.currentIndex = 0
         }
-        this.updataChart() // 在更改完currentIndex之后，需要更新图表的显示
+        this.updateChart() // 在更改完currentIndex之后，需要更新图表的显示
       }, 5000)
     }
   }
